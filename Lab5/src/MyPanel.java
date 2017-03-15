@@ -105,7 +105,7 @@ public class MyPanel extends JPanel {
 //			for(int i=0; i<minesNumbers; i++) {
 //				g.setColor(Color.BLACK);
 //				g.fillRect(minesPosition[i][0], minesPosition[i][1], INNER_CELL_SIZE, INNER_CELL_SIZE);
-			}		
+			}		//
 			
 	
 	
