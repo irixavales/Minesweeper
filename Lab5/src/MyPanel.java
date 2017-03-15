@@ -29,7 +29,7 @@ public class MyPanel extends JPanel {
 			yPos = GRID_Y + INNER_CELL_SIZE * rand.nextInt();
 			minesPosition[0][i] = xPos;
 			minesPosition[1][i] = yPos;
-		}
+		}//ya me hago en todo
 		return minesPosition;
 	}
 
