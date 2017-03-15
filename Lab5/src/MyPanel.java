@@ -18,22 +18,26 @@ public class MyPanel extends JPanel {
 	public int mouseDownGridY = 0;
 	public Color[][] colorArray = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
 	Random rand = new Random();
-	public int[][] minesPosition;
 	public static int minesNumbers = 13;
+	public int[][] minesPosition = new int[minesNumbers][2];
+	
 
 	public int[][] MinesPosition () {
 		int xPos;
 		int yPos;
 		for (int i=0; i<minesNumbers; i++) {
-			xPos = GRID_X + INNER_CELL_SIZE * rand.nextInt();
-			yPos = GRID_Y + INNER_CELL_SIZE * rand.nextInt();
-			minesPosition[0][i] = xPos;
-			minesPosition[1][i] = yPos;
-		}//ya me hago en todo
+			xPos = GRID_X + 1 + (INNER_CELL_SIZE + 1) * rand.nextInt(TOTAL_COLUMNS-1);
+			yPos = GRID_Y + 1 + (INNER_CELL_SIZE + 1) * rand.nextInt(TOTAL_ROWS-1);
+			minesPosition[i][0] = xPos;
+			minesPosition[i][1] = yPos;
+		}
 		return minesPosition;
 	}
-
+	
+	
+	
 	public MyPanel() {   //This is the constructor... this code runs first to initialize
+		MinesPosition();
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
 			throw new RuntimeException("INNER_CELL_SIZE must be positive!");
 		}
@@ -71,10 +75,8 @@ public class MyPanel extends JPanel {
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(x1, y1, width + 1, height + 1);
 
-//		for(int i=0; i<minesNumbers; i++) {
-//			g.setColor(Color.BLACK);
-//			g.fillRect(minesPosition[0][i],minesPosition[1][i], INNER_CELL_SIZE, INNER_CELL_SIZE);
-//		}
+		
+
 
 			//Draw the grid minus the bottom row (which has only one cell)
 			//By default, the grid will be 10x10 (see above: TOTAL_COLUMNS and TOTAL_ROWS) 
@@ -99,7 +101,13 @@ public class MyPanel extends JPanel {
 					}
 				}
 			}
-		}
+			
+//			for(int i=0; i<minesNumbers; i++) {
+//				g.setColor(Color.BLACK);
+//				g.fillRect(minesPosition[i][0], minesPosition[i][1], INNER_CELL_SIZE, INNER_CELL_SIZE);
+			}		
+			
+	
 	
 	public int getGridX(int x, int y) {
 		Insets myInsets = getInsets();
