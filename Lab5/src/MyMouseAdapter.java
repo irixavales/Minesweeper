@@ -43,8 +43,8 @@ public class MyMouseAdapter extends MouseAdapter {
 	}
 	
 	public void mouseReleased(MouseEvent e) {
-//		switch (e.getButton()) {
-//		case 1:		//Left mouse button
+//switch (e.getButton()) {
+	//case 1:		//Left mouse button
 			Component c = e.getComponent();
 			while (!(c instanceof JFrame)) {
 				c = c.getParent();
@@ -122,39 +122,44 @@ public class MyMouseAdapter extends MouseAdapter {
 				if ((gridX == -1) || (gridY == -1)) {
 					//Is releasing outside
 					//Do nothing
-				} else {
-					if ((myPanel.mouseDownGridX != gridX) || (myPanel.mouseDownGridY != gridY)) {
-						//Released the mouse button on a different cell where it was pressed
-						//Do nothing
-					} else {
+//		
+				}else {
 						
 						//Released the mouse button on the same cell where it was pressed
-						
+						if(myPanel.colorArray[gridX][gridY]== Color.WHITE){ //Changes cell to red upon right click while the original color was white.
 							Color newColor = null;
 							switch (generator.nextInt(1)) {
 							case 0:
 								newColor = Color.RED;
 								break;
-
 							}
-							myPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY] = newColor;
+							myPanel.colorArray[gridX][gridY] = newColor;
 							myPanel.repaint();
-							
-							//if( )
+
 						}
-					}
-				}
+					 
+			
+			
+	if ((myPanel.mouseDownGridX != gridX) || (myPanel.mouseDownGridY != gridY)) {
+				//Released the mouse button on a different cell where it was pressed
+					//Do nothing
+			
+		
+			
+	
 			
 	
 			myPanel.repaint();
-	
 			break;
-			default:    //Some other button (2 = Middle mouse button, etc.)
+		
+	}}}
+				
+	default:    //Some other button (2 = Middle mouse button, etc.)
 			//Do nothing
 			break;
-		}
-	}
-}
+		
+		
+}}}
 	
 	
 	
