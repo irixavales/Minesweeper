@@ -20,6 +20,7 @@ public class MyPanel extends JPanel {
 	Random rand = new Random();
 	public static int minesNumbers = 13;
 	public static int[][] minesPosition = new int[minesNumbers][2];
+	public static int numberOfMines;
 	
 
 	public int[][] MinesPosition () {
@@ -97,6 +98,9 @@ public class MyPanel extends JPanel {
 //				g.setColor(Color.BLACK);
 //				g.fillRect(GRID_X + minesPosition[i][0]*(INNER_CELL_SIZE +1) + 1, GRID_Y + minesPosition[i][1]*(INNER_CELL_SIZE + 1) + 1, INNER_CELL_SIZE, INNER_CELL_SIZE);
 //			}
+			
+			g.setColor(Color.CYAN);
+			g.drawString(String.valueOf(numberOfMines),x1, y1);
 	}
 			
 	
@@ -153,5 +157,51 @@ public class MyPanel extends JPanel {
 			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos) {return 1;} //returns 1 if cell is a mine
 		}
 		return 0; //returns 0 if cell is not mine
+	}
+	
+	public static int surroundingMines (int xPos, int yPos) {
+		numberOfMines = 0;
+		for (int i = 0; i < minesNumbers; i++) {
+			for (int j=-1; j < 2; j++) {
+				for (int k=-1; k<2; k++) {
+					int xpos = minesPosition[i][0];
+					int ypos = minesPosition[i][1];
+					if (minesPosition[i][0] == xPos+j && minesPosition[i][1] == yPos+k) {
+						numberOfMines++;
+					}
+				}
+			}
+			
+			if (numberOfMines == 0) {
+				for (i = 0; i < minesNumbers; i++) {
+					for (int j=-1; j < 2; j++) {
+						for (int k=-1; k<2; k++) {
+							MyPanel.surroundingMines(xPos+j, yPos+k);
+							}
+						}
+					} 
+				}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+//			if (minesPosition[i][0] == xPos+1 && minesPosition[i][1] == yPos) {this.numberOfMines++;}
+//			if (minesPosition[i][0] == xPos+1 && minesPosition[i][1] == yPos+1) {this.numberOfMines++;}
+//			if (minesPosition[i][0] == xPos+1 && minesPosition[i][1] == yPos-1) {this.numberOfMines++;}
+//			if (minesPosition[i][0] == xPos-1 && minesPosition[i][1] == yPos) {this.numberOfMines++;}
+//			if (minesPosition[i][0] == xPos-1 && minesPosition[i][1] == yPos+1) {this.numberOfMines++;}
+//			if (minesPosition[i][0] == xPos-1 && minesPosition[i][1] == yPos-1) {this.numberOfMines++;}
+//			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos+1) {this.numberOfMines++;}
+//			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos-1) {this.numberOfMines++;}
+		
+		
+		
+		
+	}return numberOfMines;
 	}
 }
