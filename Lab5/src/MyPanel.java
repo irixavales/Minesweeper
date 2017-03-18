@@ -19,23 +19,22 @@ public class MyPanel extends JPanel {
 	public Color[][] colorArray = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
 	Random rand = new Random();
 	public static int minesNumbers = 13;
-	public int[][] minesPosition = new int[minesNumbers][2];
+	public static int[][] minesPosition = new int[minesNumbers][2];
 	
 
 	public int[][] MinesPosition () {
 		int xPos;
 		int yPos;
 		for (int i=0; i<minesNumbers; i++) {
-			xPos = GRID_X + 1 + (INNER_CELL_SIZE + 1) * rand.nextInt(TOTAL_COLUMNS-1);
-			yPos = GRID_Y + 1 + (INNER_CELL_SIZE + 1) * rand.nextInt(TOTAL_ROWS-1);
+			xPos = rand.nextInt(TOTAL_COLUMNS);
+			yPos = rand.nextInt(TOTAL_ROWS);
 			minesPosition[i][0] = xPos;
 			minesPosition[i][1] = yPos;
+			System.out.println(xPos+" "+yPos);
 		}
 		return minesPosition;
 	}
-	
-	
-	
+
 	public MyPanel() {   //This is the constructor... this code runs first to initialize
 		
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
@@ -55,6 +54,7 @@ public class MyPanel extends JPanel {
 		}
 		MinesPosition();
 	}
+	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -95,7 +95,7 @@ public class MyPanel extends JPanel {
 			
 //			for(int i=0; i<minesNumbers; i++) {
 //				g.setColor(Color.BLACK);
-//				g.fillRect(minesPosition[i][0], minesPosition[i][1], INNER_CELL_SIZE, INNER_CELL_SIZE);
+//				g.fillRect(GRID_X + minesPosition[i][0]*(INNER_CELL_SIZE +1) + 1, GRID_Y + minesPosition[i][1]*(INNER_CELL_SIZE + 1) + 1, INNER_CELL_SIZE, INNER_CELL_SIZE);
 //			}
 	}
 			
@@ -146,5 +146,12 @@ public class MyPanel extends JPanel {
 			return -1;
 		}
 		return y;
+	}
+	
+	public static int isMine (int xPos, int yPos) {
+		for (int i=0; i < minesNumbers; i++) {
+			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos) {return 1;} //returns 1 if cell is a mine
+		}
+		return 0; //returns 0 if cell is not mine
 	}
 }
