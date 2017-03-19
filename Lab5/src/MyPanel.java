@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Insets;
 import java.util.Random;
@@ -106,14 +107,16 @@ public class MyPanel extends JPanel {
 		for (int x = 0; x < TOTAL_COLUMNS; x++) {
 			for (int y = 0; y < TOTAL_ROWS; y++) {
 				Color c = colorArray[x][y];
-				if(c.equals(Color.GRAY)) {
-					g.setColor(Color.CYAN);
-					g.drawString(Integer.toString(numberOfSurroundingMines[x][y]),x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1);
+				if(c.equals(Color.LIGHT_GRAY)) {
+					if (numberOfSurroundingMines[x][y] != 0) {
+					g.setColor(Color.BLUE);
+					g.setFont(new Font("TimesRoman", Font.PLAIN, 10));
+					g.drawString(Integer.toString(numberOfSurroundingMines[x][y]),(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1) + INNER_CELL_SIZE/2, (y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1) + INNER_CELL_SIZE/2);
 				}
 			}
 		}
 
-	}
+	}}
 
 
 

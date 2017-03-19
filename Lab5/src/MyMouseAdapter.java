@@ -85,8 +85,7 @@ public class MyMouseAdapter extends MouseAdapter {
 							int isMine = MyPanel.isMine(gridX, gridY);
 							switch (isMine) {
 							case 0:
-								newColor = Color.LIGHT_GRAY;
-								myPanel.colorArray[gridX][gridY] = newColor;
+								myPanel.colorArray[gridX][gridY] = Color.LIGHT_GRAY;
 								MyPanel.surroundingMines(gridX, gridY);
 								break;
 							case 1:
