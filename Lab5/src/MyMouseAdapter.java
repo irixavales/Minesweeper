@@ -86,14 +86,14 @@ public class MyMouseAdapter extends MouseAdapter {
 							switch (isMine) {
 							case 0:
 								newColor = Color.LIGHT_GRAY;
+								myPanel.colorArray[gridX][gridY] = newColor;
 								MyPanel.surroundingMines(gridX, gridY);
-								
 								break;
 							case 1:
-								newColor = Color.BLACK;
+								myPanel.lostGame();								
 								break;
 							}
-							myPanel.colorArray[gridX][gridY] = newColor;
+							
 							myPanel.repaint();
 						}	
 					}

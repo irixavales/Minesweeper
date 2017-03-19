@@ -16,28 +16,15 @@ public class MyPanel extends JPanel {
 	public int y = -1;
 	public int mouseDownGridX = 0;
 	public int mouseDownGridY = 0;
-	public Color[][] colorArray = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
+	public static Color[][] colorArray = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
 	Random rand = new Random();
 	public static int minesNumbers = 13;
 	public static int[][] minesPosition = new int[minesNumbers][2];
-	public static int numberOfMines;
-	
+	public static int[][] numberOfSurroundingMines = new int[TOTAL_COLUMNS][TOTAL_ROWS];
 
-	public int[][] MinesPosition () {
-		int xPos;
-		int yPos;
-		for (int i=0; i<minesNumbers; i++) {
-			xPos = rand.nextInt(TOTAL_COLUMNS);
-			yPos = rand.nextInt(TOTAL_ROWS);
-			minesPosition[i][0] = xPos;
-			minesPosition[i][1] = yPos;
-			System.out.println(xPos+" "+yPos);
-		}
-		return minesPosition;
-	}
 
 	public MyPanel() {   //This is the constructor... this code runs first to initialize
-		
+
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
 			throw new RuntimeException("INNER_CELL_SIZE must be positive!");
 		}
@@ -55,7 +42,28 @@ public class MyPanel extends JPanel {
 		}
 		MinesPosition();
 	}
-	
+
+	public int[][] MinesPosition () {
+		int xPos;
+		int yPos;
+		for (int i=0; i<minesNumbers; i++) {
+			xPos = rand.nextInt(TOTAL_COLUMNS);
+			yPos = rand.nextInt(TOTAL_ROWS);
+			minesPosition[i][0] = xPos;
+			minesPosition[i][1] = yPos;
+			System.out.println(xPos+" "+yPos);
+		}
+		return minesPosition;
+	}
+
+	public static int getMinePositionX (int i) {
+		return minesPosition[i][0];
+	}
+
+	public static int getMinePositionY (int i) {
+		return minesPosition [i][1];
+	}
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -72,39 +80,43 @@ public class MyPanel extends JPanel {
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(x1, y1, width + 1, height + 1);
 
-		
 
 
-			//Draw the grid
-			//By default, the grid will be 9x9 (see above: TOTAL_COLUMNS and TOTAL_ROWS) 
-			g.setColor(Color.BLACK);
-			for (int y = 0; y <= TOTAL_ROWS; y++) {
-				g.drawLine(x1 + GRID_X, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)), x1 + GRID_X + ((INNER_CELL_SIZE + 1) * TOTAL_COLUMNS), y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)));
+
+		//Draw the grid
+		//By default, the grid will be 9x9 (see above: TOTAL_COLUMNS and TOTAL_ROWS) 
+		g.setColor(Color.BLACK);
+		for (int y = 0; y <= TOTAL_ROWS; y++) {
+			g.drawLine(x1 + GRID_X, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)), x1 + GRID_X + ((INNER_CELL_SIZE + 1) * TOTAL_COLUMNS), y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)));
+		}
+		for (int x = 0; x <= TOTAL_COLUMNS; x++) {
+			g.drawLine(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)), y1 + GRID_Y, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)), y1 + GRID_Y + ((INNER_CELL_SIZE + 1) * (TOTAL_ROWS)));
+		}
+
+		//Paint cell colors
+		for (int x = 0; x < TOTAL_COLUMNS; x++) {
+			for (int y = 0; y < TOTAL_ROWS; y++) {
+				Color c = colorArray[x][y];
+				g.setColor(c);
+				g.fillRect(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1, INNER_CELL_SIZE, INNER_CELL_SIZE);		
 			}
-			for (int x = 0; x <= TOTAL_COLUMNS; x++) {
-				g.drawLine(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)), y1 + GRID_Y, x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)), y1 + GRID_Y + ((INNER_CELL_SIZE + 1) * (TOTAL_ROWS)));
-			}
+		}
 
-			//Paint cell colors
-			for (int x = 0; x < TOTAL_COLUMNS; x++) {
-				for (int y = 0; y < TOTAL_ROWS; y++) {
-						Color c = colorArray[x][y];
-						g.setColor(c);
-						g.fillRect(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1, INNER_CELL_SIZE, INNER_CELL_SIZE);
+		//Draw number of surrounding mines for uncovered cells
+		for (int x = 0; x < TOTAL_COLUMNS; x++) {
+			for (int y = 0; y < TOTAL_ROWS; y++) {
+				Color c = colorArray[x][y];
+				if(c.equals(Color.GRAY)) {
+					g.setColor(Color.CYAN);
+					g.drawString(Integer.toString(numberOfSurroundingMines[x][y]),x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1);
 				}
 			}
-			
-//			for(int i=0; i<minesNumbers; i++) {
-//				g.setColor(Color.BLACK);
-//				g.fillRect(GRID_X + minesPosition[i][0]*(INNER_CELL_SIZE +1) + 1, GRID_Y + minesPosition[i][1]*(INNER_CELL_SIZE + 1) + 1, INNER_CELL_SIZE, INNER_CELL_SIZE);
-//			}
-			
-			g.setColor(Color.CYAN);
-			g.drawString(String.valueOf(numberOfMines),x1, y1);
+		}
+
 	}
-			
-	
-	
+
+
+
 	public int getGridX(int x, int y) {
 		Insets myInsets = getInsets();
 		int x1 = myInsets.left;
@@ -151,57 +163,63 @@ public class MyPanel extends JPanel {
 		}
 		return y;
 	}
-	
+
 	public static int isMine (int xPos, int yPos) {
 		for (int i=0; i < minesNumbers; i++) {
 			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos) {return 1;} //returns 1 if cell is a mine
 		}
 		return 0; //returns 0 if cell is not mine
 	}
-	
-	public static int surroundingMines (int xPos, int yPos) {
-		numberOfMines = 0;
-		for (int i = 0; i < minesNumbers; i++) {
-			for (int j=-1; j < 2; j++) {
-				for (int k=-1; k<2; k++) {
+
+	public static void surroundingMines (int xPos, int yPos) {
+		numberOfSurroundingMines[xPos][yPos] = 0;
+		for (int j = -1; j < 2; j++) {
+			for (int k = -1; k < 2; k++) {
+				for (int i = 0; i < minesNumbers; i++) {
 					int xpos = minesPosition[i][0];
 					int ypos = minesPosition[i][1];
-					if (minesPosition[i][0] == xPos+j && minesPosition[i][1] == yPos+k) {
-						numberOfMines++;
+					if (getMinePositionX(i) == xPos+j && getMinePositionY(i) == yPos+k) {
+						numberOfSurroundingMines[xPos][yPos]++;
 					}
 				}
 			}
-			
-			if (numberOfMines == 0) {
-				for (i = 0; i < minesNumbers; i++) {
-					for (int j=-1; j < 2; j++) {
-						for (int k=-1; k<2; k++) {
-							MyPanel.surroundingMines(xPos+j, yPos+k);
-							}
-						}
-					} 
-				}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-//			if (minesPosition[i][0] == xPos+1 && minesPosition[i][1] == yPos) {this.numberOfMines++;}
-//			if (minesPosition[i][0] == xPos+1 && minesPosition[i][1] == yPos+1) {this.numberOfMines++;}
-//			if (minesPosition[i][0] == xPos+1 && minesPosition[i][1] == yPos-1) {this.numberOfMines++;}
-//			if (minesPosition[i][0] == xPos-1 && minesPosition[i][1] == yPos) {this.numberOfMines++;}
-//			if (minesPosition[i][0] == xPos-1 && minesPosition[i][1] == yPos+1) {this.numberOfMines++;}
-//			if (minesPosition[i][0] == xPos-1 && minesPosition[i][1] == yPos-1) {this.numberOfMines++;}
-//			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos+1) {this.numberOfMines++;}
-//			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos-1) {this.numberOfMines++;}
-		
-		
-		
-		
-	}return numberOfMines;
+			//			
+			//			if (numberOfSurroundingMines == 0) {
+			//				for (i = 0; i < minesNumbers; i++) {
+			//					for (int j=-1; j < 2; j++) {
+			//						for (int k=-1; k<2; k++) {
+			//							MyPanel.surroundingMines(xPos+j, yPos+k);
+			//							}
+			//						}
+			//					} 
+			//				}
+			//			
+			//			
+			//			
+			//			
+			//			
+			//			
+			//			
+			//			
+			//			
+			////			if (minesPosition[i][0] == xPos+1 && minesPosition[i][1] == yPos) {this.numberOfMines++;}
+			////			if (minesPosition[i][0] == xPos+1 && minesPosition[i][1] == yPos+1) {this.numberOfMines++;}
+			////			if (minesPosition[i][0] == xPos+1 && minesPosition[i][1] == yPos-1) {this.numberOfMines++;}
+			////			if (minesPosition[i][0] == xPos-1 && minesPosition[i][1] == yPos) {this.numberOfMines++;}
+			////			if (minesPosition[i][0] == xPos-1 && minesPosition[i][1] == yPos+1) {this.numberOfMines++;}
+			////			if (minesPosition[i][0] == xPos-1 && minesPosition[i][1] == yPos-1) {this.numberOfMines++;}
+			////			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos+1) {this.numberOfMines++;}
+			////			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos-1) {this.numberOfMines++;}
+			//		
+			//		
+			//		
+			//		
+		}
+	}
+
+	public void lostGame () {
+		for (int i = 0; i < minesNumbers; i++) {
+			colorArray[MyPanel.getMinePositionX(i)][MyPanel.getMinePositionY(i)] = Color.BLACK;
+		}
 	}
 }
