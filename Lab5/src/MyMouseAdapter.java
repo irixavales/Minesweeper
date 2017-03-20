@@ -43,7 +43,7 @@ public class MyMouseAdapter extends MouseAdapter {
 
 	public void mouseReleased(MouseEvent e) {
 		//switch (e.getButton()) {
-		//case 1:		//Left mouse button
+		
 		Component c = e.getComponent();
 		while (!(c instanceof JFrame)) {
 			c = c.getParent();
@@ -65,8 +65,8 @@ public class MyMouseAdapter extends MouseAdapter {
 		int gridY = myPanel.getGridY(x, y);
 
 		switch (e.getButton()) {
-
-		case 1:
+		
+		case 1:		//Left mouse button
 			if ((myPanel.mouseDownGridX == -1) || (myPanel.mouseDownGridY == -1)) {
 				//Had pressed outside
 				//Do nothing
@@ -84,11 +84,12 @@ public class MyMouseAdapter extends MouseAdapter {
 							Color newColor = null;
 							int isMine = MyPanel.isMine(gridX, gridY);
 							switch (isMine) {
-							case 0:
+							case 0: //Released on cell without mine
 								myPanel.colorArray[gridX][gridY] = Color.LIGHT_GRAY;
 								MyPanel.surroundingMines(gridX, gridY);
 								break;
-							case 1:
+							case 1: //Realeased on a mine
+								MyPanel.lostGame = true;
 								myPanel.lostGame();								
 								break;
 							}

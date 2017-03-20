@@ -5,14 +5,17 @@ public class Main {
 		JFrame myFrame = new JFrame("MINESWEEPER");
 		myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		myFrame.setLocation(400, 150);
-		myFrame.setSize(350, 350);
+		myFrame.setSize(320, 375);
 
 		MyPanel myPanel = new MyPanel();
-		myFrame.add(myPanel);
-
-		MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
-		myFrame.addMouseListener(myMouseAdapter);
-
+		
+		
+			myFrame.add(myPanel);
+			MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
+			myFrame.addMouseListener(myMouseAdapter);
+		
+		
+		
 		myFrame.setVisible(true);
 	}
 }
