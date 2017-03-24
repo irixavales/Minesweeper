@@ -8,12 +8,12 @@ public class Main {
 		myFrame.setSize(320, 375);
 
 		MyPanel myPanel = new MyPanel();
-		
-		
-			myFrame.add(myPanel);
+		myFrame.add(myPanel);
+			
+//		if (MyPanel.lostGame == false && MyPanel.wonGame() == false) {
 			MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
 			myFrame.addMouseListener(myMouseAdapter);
-		
+//		}
 		
 		
 		myFrame.setVisible(true);
