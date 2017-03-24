@@ -151,5 +151,5 @@ public class MyMouseAdapter extends MouseAdapter {
 			break;
 		}
 	}
-}
+}//
 

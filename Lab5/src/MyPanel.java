@@ -242,4 +242,4 @@ public class MyPanel extends JPanel {
 	public static boolean wonGame () {
 		return (uncoveredCells == cellsWithoutMines);
 	}
-}
+}//
