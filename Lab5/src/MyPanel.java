@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class MyPanel extends JPanel {
@@ -13,8 +14,8 @@ public class MyPanel extends JPanel {
 	private static final int INNER_CELL_SIZE = 29;
 	private static final int TOTAL_COLUMNS = 9;
 	private static final int TOTAL_ROWS = 9;
-	public int x = -1;
-	public int y = -1;
+	public static int x = -1;
+	public static int y = -1;
 	public int mouseDownGridX = 0;
 	public int mouseDownGridY = 0;
 	public static Color[][] colorArray = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
@@ -50,12 +51,16 @@ public class MyPanel extends JPanel {
 	public int[][] MinesPosition () {
 		int xPos;
 		int yPos;
+		int c=rand.nextInt(TOTAL_COLUMNS);
+		int d=rand.nextInt(TOTAL_ROWS);
 		for (int i=0; i<minesNumbers; i++) {
 			xPos = rand.nextInt(TOTAL_COLUMNS);
 			yPos = rand.nextInt(TOTAL_ROWS);
+			if(!(c==xPos && d==yPos)){
 			minesPosition[i][0] = xPos;
 			minesPosition[i][1] = yPos;
 			System.out.println(xPos+" "+yPos);
+			}
 		}
 		return minesPosition;
 	}
@@ -139,7 +144,7 @@ public class MyPanel extends JPanel {
 							break;
 						}
 						g.setFont(new Font("CALIBRI", Font.BOLD, 10));
-						g.drawString(Integer.toString(numberOfSurroundingMines[x][y]),(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1) + INNER_CELL_SIZE/2, (y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1) + INNER_CELL_SIZE/2);
+						g.drawString(Integer.toString(numberOfSurroundingMines[x][y]),(x1 + GRID_X + (x * ((INNER_CELL_SIZE + 1))) + 1) + INNER_CELL_SIZE/2 +1, (y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1) + INNER_CELL_SIZE/2 +3);
 					}
 				}
 			}
@@ -206,36 +211,66 @@ public class MyPanel extends JPanel {
 		numberOfSurroundingMines[xPos][yPos] = 0;
 		for (int j = -1; j < 2; j++) {
 			for (int k = -1; k < 2; k++) {
+				if(!(j==0&&k==0)){
 				for (int i = 0; i < minesNumbers; i++) {
 //					int xpos = minesPosition[i][0];
 //					int ypos = minesPosition[i][1];
 					if (getMinePositionX(i) == xPos+j && getMinePositionY(i) == yPos+k) {
 						numberOfSurroundingMines[xPos][yPos]++;
-					}
-				}
+					
+
+		
+					}}}}}
+		
+		
+		if(numberOfSurroundingMines[xPos][yPos]==0 && xPos <TOTAL_COLUMNS){
+			
+			MyPanel.colorArray[xPos+1][yPos]= Color.LIGHT_GRAY;
+			
+			MyPanel.surroundingMines(xPos+1, yPos);
+			
+		if(numberOfSurroundingMines[xPos][yPos]==0 && yPos <TOTAL_ROWS){
+			
+			MyPanel.colorArray[xPos][yPos+1]= Color.LIGHT_GRAY;
+	
+			MyPanel.surroundingMines(xPos, yPos+1);
+			
 			}
-						
-//			if (numberOfSurroundingMines[xPos][yPos] == 0) {
-//				colorArray[xPos][yPos] = Color.LIGHT_GRAY;
-//				for (j=-1; j < 2; j++) {
-//					for (int k=-1; k<2; k++) {
-//						for (int i = 0; i < minesNumbers; i++) {
-//							MyPanel.surroundingMines(xPos+j, yPos+k);
-//						}
-//					}
-//				} 
-//			}	
-
+		
+			
+		if(numberOfSurroundingMines[xPos][yPos]==0 && xPos >0){
+			
+			MyPanel.colorArray[xPos-1][yPos]= Color.LIGHT_GRAY;
+			
+			MyPanel.surroundingMines(xPos-1, yPos);
+			
+			}
+		if(numberOfSurroundingMines[xPos][yPos]==0 && yPos >0){
+			
+			MyPanel.colorArray[xPos][yPos-1]= Color.LIGHT_GRAY;
+			
+			MyPanel.surroundingMines(xPos, yPos-1);
+			
+			}}
 		}
-	}
-
+	
+	
 	public void lostGame () {
 		for (int i = 0; i < minesNumbers; i++) {
 			colorArray[MyPanel.getMinePositionX(i)][MyPanel.getMinePositionY(i)] = Color.BLACK;
 		}
 	}
-	
 	public boolean wonGame () {
-		return (uncoveredCells == cellsWithoutMines);
+		return (uncoveredCells == cellsWithoutMines) && true;
 	}
-}
+	public void announcewon(){
+	if(wonGame()== true){
+		JOptionPane.showMessageDialog(null, "Won", null, JOptionPane.INFORMATION_MESSAGE );
+		System.exit(0);
+	}
+	}
+	public void announcelost(){
+		if(isMine(mouseDownGridX, mouseDownGridY) == mouseDownGridX && isMine(mouseDownGridX, mouseDownGridY) == mouseDownGridY){
+			JOptionPane.showMessageDialog(null, "YOU LOOSE" );
+		}
+}}

@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -94,15 +95,19 @@ public class MyMouseAdapter extends MouseAdapter {
 							case 1: //Released on a mine
 								MyPanel.lostGame = true;
 								myPanel.lostGame();								
-								break;
-							}
+								break;}}
+				
+						}
+						
+						
+						
+						
+						
+					
 
-							myPanel.repaint();
-						}	
-					}
 
-				}
-			}
+									}}
+			
 
 
 
