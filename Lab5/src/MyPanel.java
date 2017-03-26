@@ -192,63 +192,129 @@ public class MyPanel extends JPanel {
 		return y;
 	}
 
+	//Returns true if cell is a mine
 	public static boolean isMine (int xPos, int yPos) {
 		for (int i=0; i < minesNumbers; i++) {
-			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos) {return true;} //returns 1 if cell is a mine
+			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos) {return true;}
 		}
-		return false; //returns 0 if cell is not mine
+		return false;
 	}
 
+	//Returns true if cell is on a corner or edge of the grid
 	public static boolean isBorder (int xPos, int yPos) {
 		if (xPos == 0 || xPos >= TOTAL_COLUMNS - 1) {return true;}
 		else if (yPos == 0 || yPos >= TOTAL_ROWS - 1) {return true;}
 		return false;
 	}
 
+	//Returns number of mines on the six surrounding squares of a cell
 	public static void countSurroundingMines (int xPos, int yPos) {
-		MyPanel.colorArray[xPos][yPos] = Color.LIGHT_GRAY;
+		colorArray[xPos][yPos] = Color.LIGHT_GRAY;
 		numberOfSurroundingMines[xPos][yPos] = 0;
-		int mines; //debugging
-		//		if (isBorder(xPos, yPos) == false) {
 		for (int j = 0; j < 3; j++) {
 			for (int k = 0; k < 3; k++) {
 				if (!(j==1 && k==1)) {
 					if (isMine(xPos+j-1, yPos+k-1)) {
 						numberOfSurroundingMines[xPos][yPos]++;
-						mines = numberOfSurroundingMines[xPos][yPos]; //debugging purposes
 					}
 				}
 			}
 		}
 		if (numberOfSurroundingMines[xPos][yPos] == 0) {openEmptyMines(xPos, yPos);}
 	}
-	//		}
+
 
 	public static void openEmptyMines (int xPos, int yPos) {
-
 		if (!isBorder(xPos, yPos)) {
-			//			for (int i = 0; i < 3; i++) {
-			//				for (int j = 0; j < 3; j++) {
-			//					MyPanel.colorArray[xPos+i-1][yPos+j-1] = Color.LIGHT_GRAY;
-			//				}
-			//			}				
-			//			if (!isBorder(xPos, yPos)) {
-//			MyPanel.colorArray[xPos+1][yPos] = Color.LIGHT_GRAY;
-			//			MyPanel.colorArray[xPos-1][yPos] = Color.LIGHT_GRAY;
-//			MyPanel.colorArray[xPos][yPos+1] = Color.LIGHT_GRAY;
-			//			MyPanel.colorArray[xPos][yPos-1] = Color.LIGHT_GRAY;
-			MyPanel.countSurroundingMines(xPos + 1, yPos);
-			MyPanel.countSurroundingMines(xPos, yPos + 1);
-//						MyPanel.surroundingMines(xPos - 1, yPos);
-//						MyPanel.surroundingMines(xPos, yPos - 1);
-//						MyPanel.surroundingMines(xPos - 1, yPos - 1);
-			//			MyPanel.surroundingMines(xPos + 1, yPos + 1);
-			//			MyPanel.surroundingMines(xPos - 1, yPos + 1);
-			//			MyPanel.surroundingMines(xPos + 1, yPos - 1);
+			for (int j = 0; j < 3; j++) {
+				for (int k = 0; k < 3; k++) {
+					if (!(j==0&&k==0)) {
+						if (!colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+j-1][yPos+k-1].equals(Color.RED)){
+							MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+						}
+					}
+				}
+			}
 		}
-
+		else {
+			if (xPos==0 && yPos==0) {
+				if (!colorArray[xPos+1][yPos].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+1][yPos].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos+1, yPos+1);
+				if (!colorArray[xPos][yPos+1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos][yPos+1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos, yPos+1);
+				if (!colorArray[xPos+1][yPos+1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+1][yPos+1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos+1, yPos+1);
+			}
+			else if (xPos==0 && yPos==TOTAL_ROWS-1) {
+				if (!colorArray[xPos+1][yPos].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+1][yPos].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos+1, yPos);
+				if (!colorArray[xPos][yPos-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos][yPos-1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos, yPos-1);
+				if (!colorArray[xPos+1][yPos-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+1][yPos-1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos+1, yPos-1);
+			}
+			else if (xPos==TOTAL_COLUMNS-1 && yPos==0) {
+				if (!colorArray[xPos-1][yPos].equals(Color.LIGHT_GRAY)&&!colorArray[xPos-1][yPos].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos-1, yPos);
+				if (!colorArray[xPos][yPos+1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos][yPos+1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos, yPos+1);
+				if (!colorArray[xPos-1][yPos+1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos-1][yPos+1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos-1, yPos+1);
+			}
+			else if (xPos==TOTAL_COLUMNS-1 && yPos==TOTAL_ROWS-1) {
+				if (!colorArray[xPos-1][yPos].equals(Color.LIGHT_GRAY)&&!colorArray[xPos-1][yPos].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos-1, yPos);
+				if (!colorArray[xPos][yPos-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos][yPos-1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos, yPos-1);
+				if (!colorArray[xPos-1][yPos-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos-1][yPos-1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos-1, yPos-1);
+			}
+			else if (xPos == 0) {
+				for (int j = 1; j < 3; j++) {
+					for (int k = 0; k < 3; k++) {
+						if (!(j==0&&k==0)) {
+							if (!colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+j-1][yPos+k-1].equals(Color.RED)){
+								MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+							}
+						}
+					}
+				}
+			}
+			else if (yPos == 0) {
+				for (int j = 0; j < 3; j++) {
+					for (int k = 1; k < 3; k++) {
+						if (!(j==00&k==0)) {
+							if (!colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+j-1][yPos+k-1].equals(Color.RED)){
+								MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+							}
+						}
+					}
+				}
+			}
+			else if (xPos == TOTAL_COLUMNS-1) {
+				for (int j = 0; j < 2; j++) {
+					for (int k = 0; k < 3; k++) {
+						if (!(j==0&&k==0)) {
+							if (!colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+j-1][yPos+k-1].equals(Color.RED)){
+								MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+							}
+						}
+					}
+				}
+			}
+			else if (yPos == TOTAL_ROWS-1) {
+				for (int j = 0; j < 3; j++) {
+					for (int k = 0; k < 2; k++) {
+						if (!(j==0&&k==0)) {
+							if (!colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+j-1][yPos+k-1].equals(Color.RED)){
+								MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
-	//	}
 
 	public void lostGame () {
 		MyPanel.lostGame = true;
