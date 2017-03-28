@@ -10,8 +10,6 @@ public class MyMouseAdapter extends MouseAdapter {
 
 
 	public void mousePressed(MouseEvent e) {
-		//		switch (e.getButton()) {
-		//		case 1:		//Left mouse button
 		Component c = e.getComponent();
 		while (!(c instanceof JFrame)) {
 			c = c.getParent();
@@ -32,19 +30,11 @@ public class MyMouseAdapter extends MouseAdapter {
 		myPanel.mouseDownGridX = myPanel.getGridX(x, y);
 		myPanel.mouseDownGridY = myPanel.getGridY(x, y);
 		myPanel.repaint();
-		//			break;
-		//		case 3:		//Right mouse button
-		//			//Do nothing
-		//			break;
-		//		default:    //Some other button (2 = Middle mouse button, etc.)
-		//			//Do nothing
-		//			break;
 	}
 
 
 
 	public void mouseReleased(MouseEvent e) {
-		//switch (e.getButton()) {
 
 		Component c = e.getComponent();
 		while (!(c instanceof JFrame)) {
@@ -66,6 +56,7 @@ public class MyMouseAdapter extends MouseAdapter {
 		int gridX = myPanel.getGridX(x, y);
 		int gridY = myPanel.getGridY(x, y);
 
+		//		if (!MyPanel.lostGame || !MyPanel.wonGame) {
 		switch (e.getButton()) {
 
 		case 1:		//Left mouse button
@@ -86,26 +77,18 @@ public class MyMouseAdapter extends MouseAdapter {
 					else {
 						//Released the mouse button on the same cell where it was pressed
 						if(!MyPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY].equals(Color.RED)) { //Repaints cell light grey upon left click if the cell is not red.
-							int isMine = MyPanel.isMine(gridX, gridY);
-							switch (isMine) {
-							case 0: //Released on cell without mine
-								MyPanel.colorArray[gridX][gridY] = Color.LIGHT_GRAY;
-								MyPanel.surroundingMines(gridX, gridY);
-								break;
-							case 1: //Released on a mine
-								MyPanel.lostGame = true;
-								myPanel.lostGame();								
-								break;
+							boolean isMine = MyPanel.isMine(gridX, gridY);
+							if (!isMine) {//Released on cell without mine
+								MyPanel.countSurroundingMines(gridX, gridY);
 							}
-
-							myPanel.repaint();
-						}	
-					}
-
+							else {	//Released on a mine
+								myPanel.lostGame();								
+							}
+						}
+					}	
 				}
+
 			}
-
-
 
 			myPanel.repaint();
 
@@ -151,5 +134,6 @@ public class MyMouseAdapter extends MouseAdapter {
 			break;
 		}
 	}
-}//
+	//	}
+}
 

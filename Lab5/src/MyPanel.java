@@ -22,9 +22,10 @@ public class MyPanel extends JPanel {
 	public static int minesNumbers = 13;
 	public static int cellsWithoutMines = (TOTAL_COLUMNS * TOTAL_ROWS) - minesNumbers;
 	public static int uncoveredCells = 0;
+	//TO-DO count uncovered cells
 	public static boolean lostGame = false;
-	public static int[][] minesPosition = new int[minesNumbers][2];
-	public static int[][] numberOfSurroundingMines = new int[TOTAL_COLUMNS][TOTAL_ROWS];
+	private static int[][] minesPosition = new int[minesNumbers][2];
+	public static int[][] numberOfSurroundingMines = new int[TOTAL_COLUMNS+1][TOTAL_ROWS+1];
 
 
 	public MyPanel() {   //Constructor
@@ -44,7 +45,7 @@ public class MyPanel extends JPanel {
 				colorArray[x][y] = Color.WHITE;
 			}
 		}
-		
+
 		MinesPosition();
 	}
 
@@ -59,13 +60,14 @@ public class MyPanel extends JPanel {
 			System.out.println(xPos+" "+yPos); //Print x and y coordinates for debugging purposes
 		}
 		return minesPosition;
+		//TO-DO fix array so that mines don't repeat
 	}
 
-	public static int getMinePositionX (int i) {
+	public int getX (int i) {
 		return minesPosition[i][0];
 	}
 
-	public static int getMinePositionY (int i) {
+	public int getY (int i) {
 		return minesPosition [i][1];
 	}
 
@@ -190,56 +192,59 @@ public class MyPanel extends JPanel {
 		return y;
 	}
 
-	public static int isMine (int xPos, int yPos) {
+	//Returns true if cell is a mine
+	public static boolean isMine (int xPos, int yPos) {
 		for (int i=0; i < minesNumbers; i++) {
-			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos) {return 1;} //returns 1 if cell is a mine
+			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos) {return true;}
 		}
-		return 0; //returns 0 if cell is not mine
+		return false;
 	}
 
-	public static void surroundingMines (int xPos, int yPos) {
+	//Returns true if cell is inside the grid
+	public static boolean isOnGrid (int xPos, int yPos) {
+		return !(xPos < 0 || xPos > TOTAL_COLUMNS - 1 || yPos < 0 || yPos > TOTAL_ROWS - 1);
+	}
+
+	//Returns number of mines if any on the eight surrounding squares of a cell
+	public static void countSurroundingMines (int xPos, int yPos) {
+		colorArray[xPos][yPos] = Color.LIGHT_GRAY;
 		numberOfSurroundingMines[xPos][yPos] = 0;
-		
-		for (int j = -1; j < 2; j++) {
-			for (int k = -1; k < 2; k++) {
-				if (!(j==0 && k==0)) {
-					for (int i = 0; i < minesNumbers; i++) {
-						if (getMinePositionX(i) == xPos+j && getMinePositionY(i) == yPos+k) {
-							numberOfSurroundingMines[xPos][yPos]++;
-						}
+		for (int j = 0; j < 3; j++) {
+			for (int k = 0; k < 3; k++) {
+				if (!(j==1 && k==1)) {
+					if (isMine(xPos+j-1, yPos+k-1)) {
+						numberOfSurroundingMines[xPos][yPos]++;
 					}
 				}
 			}
 		}
-		
-		if (numberOfSurroundingMines[xPos][yPos] == 0 && xPos < TOTAL_COLUMNS - 1) {
-			MyPanel.colorArray[xPos+1][yPos] = Color.LIGHT_GRAY;
-			MyPanel.surroundingMines(xPos + 1, yPos);
-		}
-
-		if (numberOfSurroundingMines[xPos][yPos] == 0 && yPos < TOTAL_ROWS - 1) {
-			MyPanel.colorArray[xPos][yPos + 1] = Color.LIGHT_GRAY;
-			MyPanel.surroundingMines(xPos, yPos + 1);
-		}
-
-		if (numberOfSurroundingMines[xPos][yPos] == 0 && xPos > 0) {
-			MyPanel.colorArray[xPos - 1][yPos] = Color.LIGHT_GRAY;
-			MyPanel.surroundingMines(xPos - 1, yPos);
-		}
-
-		if (numberOfSurroundingMines[xPos][yPos] == 0 && yPos > 0) {
-			MyPanel.colorArray[xPos][yPos - 1] = Color.LIGHT_GRAY;
-			MyPanel.surroundingMines(xPos, yPos - 1);
-		}
+		if (numberOfSurroundingMines[xPos][yPos] == 0) {openEmptyMines(xPos, yPos);}
 	}
 
+	//Counts recursively the mines around the squares surrounding an empty cell 
+	public static void openEmptyMines (int xPos, int yPos) {
+		for (int j = 0; j < 3; j++) {
+			for (int k = 0; k < 3; k++) {
+				if (!(j==0&&k==0)&&(isOnGrid(xPos+j-1, yPos+k-1))&&
+						!(colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)||
+								colorArray[xPos+j-1][yPos+k-1].equals(Color.RED))) {
+					MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+				}
+			}
+		}
+	}
+	
+	//Lost game
 	public void lostGame () {
+		MyPanel.lostGame = true;
 		for (int i = 0; i < minesNumbers; i++) {
-			colorArray[MyPanel.getMinePositionX(i)][MyPanel.getMinePositionY(i)] = Color.BLACK;
+			colorArray[this.getX(i)][this.getY(i)] = Color.BLACK;
 		}
 	}
 
+	//Won game
 	public static boolean wonGame () {
 		return (uncoveredCells == cellsWithoutMines);
 	}
-}//
+	//TO-DO Won game message
+}
