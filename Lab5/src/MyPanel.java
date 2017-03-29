@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.util.Random;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class MyPanel extends JPanel {
@@ -19,7 +20,7 @@ public class MyPanel extends JPanel {
 	public int mouseDownGridY = 0;
 	public static Color[][] colorArray = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
 	Random rand = new Random();
-	public static int minesNumbers = 13;
+	public static int minesNumbers = 10;
 	public static int cellsWithoutMines = (TOTAL_COLUMNS * TOTAL_ROWS) - minesNumbers;
 	public static int uncoveredCells = 0;
 	//TO-DO count uncovered cells
@@ -53,21 +54,27 @@ public class MyPanel extends JPanel {
 		int xPos;
 		int yPos;
 		for (int i = 0; i < minesNumbers; i++) {
-			xPos = rand.nextInt(TOTAL_COLUMNS);
-			yPos = rand.nextInt(TOTAL_ROWS);
+			boolean repeatedMine = false;
+			do {
+				xPos = rand.nextInt(TOTAL_COLUMNS);
+				yPos = rand.nextInt(TOTAL_ROWS);
+				for (int j = 0; j < minesPosition.length; j++) {
+					if (xPos==getMinePositionX(j) && yPos==getMinePositionY(j)) {
+						repeatedMine = true; }
+				}
+			}while (repeatedMine);
 			minesPosition[i][0] = xPos;
 			minesPosition[i][1] = yPos;
 			System.out.println(xPos+" "+yPos); //Print x and y coordinates for debugging purposes
 		}
 		return minesPosition;
-		//TO-DO fix array so that mines don't repeat
 	}
 
-	public int getX (int i) {
+	public int getMinePositionX (int i) {
 		return minesPosition[i][0];
 	}
 
-	public int getY (int i) {
+	public int getMinePositionY (int i) {
 		return minesPosition [i][1];
 	}
 
@@ -207,6 +214,7 @@ public class MyPanel extends JPanel {
 
 	//Returns number of mines if any on the eight surrounding squares of a cell
 	public static void countSurroundingMines (int xPos, int yPos) {
+		uncoveredCells++;
 		colorArray[xPos][yPos] = Color.LIGHT_GRAY;
 		numberOfSurroundingMines[xPos][yPos] = 0;
 		for (int j = 0; j < 3; j++) {
@@ -236,15 +244,16 @@ public class MyPanel extends JPanel {
 	
 	//Lost game
 	public void lostGame () {
-		MyPanel.lostGame = true;
+		lostGame = true;
 		for (int i = 0; i < minesNumbers; i++) {
-			colorArray[this.getX(i)][this.getY(i)] = Color.BLACK;
+			colorArray[getMinePositionX(i)][getMinePositionY(i)] = Color.BLACK;
 		}
 	}
 
 	//Won game
 	public static boolean wonGame () {
-		return (uncoveredCells == cellsWithoutMines);
+		return (uncoveredCells == (TOTAL_COLUMNS*TOTAL_ROWS) - minesNumbers);
 	}
-	//TO-DO Won game message
+
 }
+
