@@ -5,6 +5,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class MyMouseAdapter extends MouseAdapter {
 
@@ -56,7 +57,7 @@ public class MyMouseAdapter extends MouseAdapter {
 		int gridX = myPanel.getGridX(x, y);
 		int gridY = myPanel.getGridY(x, y);
 
-		//		if (!MyPanel.lostGame || !MyPanel.wonGame) {
+
 		switch (e.getButton()) {
 
 		case 1:		//Left mouse button
@@ -89,8 +90,17 @@ public class MyMouseAdapter extends MouseAdapter {
 				}
 
 			}
-
 			myPanel.repaint();
+			if (MyPanel.wonGame()) {
+				JOptionPane.showMessageDialog(null, "You Won!", "MINESWEEPER", JOptionPane.INFORMATION_MESSAGE);
+				System.exit(0);
+			}
+			else if (MyPanel.lostGame) {
+				JOptionPane.showMessageDialog(null, "You Lost", "MINESWEEPER", JOptionPane.INFORMATION_MESSAGE);
+				System.exit(0);
+			}
+
+			
 
 			break;
 
@@ -124,10 +134,22 @@ public class MyMouseAdapter extends MouseAdapter {
 					MyPanel.colorArray[gridX][gridY] = newColor;
 				}
 
+				if(MyPanel.lostGame==true){
+					JOptionPane.showMessageDialog(null, "You Loose", "MINESWEEPER", JOptionPane.INFORMATION_MESSAGE);
+					System.exit(0);
+				}
+				
+				if(MyPanel.wonGame()== true){
+					JOptionPane.showMessageDialog(null, "You Won", "MINESWEEPER", JOptionPane.INFORMATION_MESSAGE);
+					System.exit(0);
+				}
+					
 				myPanel.repaint();
 				break;
 
-			}
+	}
+	
+
 
 		default:    //Some other button (2 = Middle mouse button, etc.)
 			//Do nothing
