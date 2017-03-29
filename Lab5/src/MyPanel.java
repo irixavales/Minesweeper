@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.util.Random;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class MyPanel extends JPanel {
@@ -14,21 +13,23 @@ public class MyPanel extends JPanel {
 	private static final int INNER_CELL_SIZE = 29;
 	private static final int TOTAL_COLUMNS = 9;
 	private static final int TOTAL_ROWS = 9;
-	public static int x = -1;
-	public static int y = -1;
+	//public int 
+	public  int x = -1;
+	public  int y = -1;
 	public int mouseDownGridX = 0;
 	public int mouseDownGridY = 0;
 	public static Color[][] colorArray = new Color[TOTAL_COLUMNS][TOTAL_ROWS];
 	Random rand = new Random();
-	public static int minesNumbers = 13;
+	public static int minesNumbers = 10;
 	public static int cellsWithoutMines = (TOTAL_COLUMNS * TOTAL_ROWS) - minesNumbers;
 	public static int uncoveredCells = 0;
+	public static int mine=0;
 	public static boolean lostGame = false;
 	public static int[][] minesPosition = new int[minesNumbers][2];
-	public static int[][] numberOfSurroundingMines = new int[TOTAL_COLUMNS][TOTAL_ROWS];
+	public static int[][] numberOfSurroundingMines = new int[TOTAL_COLUMNS+1][TOTAL_ROWS+1];
+	
 
-
-	public MyPanel() {   //This is the constructor... this code runs first to initialize
+	public MyPanel() {   //Constructor
 
 		if (INNER_CELL_SIZE + (new Random()).nextInt(1) < 1) {	//Use of "random" to prevent unwanted Eclipse warning
 			throw new RuntimeException("INNER_CELL_SIZE must be positive!");
@@ -45,31 +46,83 @@ public class MyPanel extends JPanel {
 				colorArray[x][y] = Color.WHITE;
 			}
 		}
+
 		MinesPosition();
 	}
 
 	public int[][] MinesPosition () {
-		int xPos;
-		int yPos;
-		int c=rand.nextInt(TOTAL_COLUMNS);
-		int d=rand.nextInt(TOTAL_ROWS);
-		for (int i=0; i<minesNumbers; i++) {
+		int xPos=0;
+		int yPos=0;
+		for (int i = 0; i <= minesNumbers; i++) {
+
+			
+//			for(int w=0; w<minesPosition.length; w++){
+//				if(minesPosition[w][0] == xPos && minesPosition[w][1]== yPos){
+//					found=true;
+//				}
+//			if(found==true){
+			
 			xPos = rand.nextInt(TOTAL_COLUMNS);
 			yPos = rand.nextInt(TOTAL_ROWS);
-			if(!(c==xPos && d==yPos)){
+			do{
+			
+//			for(int j=0; i<=minesNumbers; i++){
+//				for(int w=0; w<=1; w++)
+//					if(minesPosition[j][0]!= && minesPosition[j][1]!= ){
+			
+//			while(int w=0; w<=minesPosition.length){
+//			if(!(xPos==minesPosition[w][0] && yPos==minesPosition[w][1])){
 			minesPosition[i][0] = xPos;
+			
 			minesPosition[i][1] = yPos;
-			System.out.println(xPos+" "+yPos);
-			}
-		}
-		return minesPosition;
-	}
+			}while(xPos==minesPosition);
+					
+		//	}
+			
+			
+			
+			System.out.println(xPos+" "+yPos); //Print x and y coordinates for debugging purposes
+			
+//			}else{
+//				i++;
+//			}
+//			
+//			
+//		
+//			
+//			}		
+						}return minesPosition;
+}
 
-	public static int getMinePositionX (int i) {
+		//TO DO: Finish method to prevent repeating mines.
+	
+
+public boolean IsMemberX(){
+	int xPos= getX();
+	for(int i=0; i<=minesNumbers; i++) {
+		for(int j=0; j<=1; j++){
+	if (xPos == minesPosition[i][j]) return true;
+	}}
+return false;}
+	
+public boolean IsMemberY(){
+		int yPos=getY();
+		for(int i=0; i<=minesNumbers; i++) {
+			for(int j=0; j<=minesNumbers; j++){
+		if (yPos == minesPosition[i][j]) return true;
+		}}
+		return false;}
+
+
+
+
+	
+
+	public int getX (int i) {
 		return minesPosition[i][0];
 	}
 
-	public static int getMinePositionY (int i) {
+	public int getY (int i) {
 		return minesPosition [i][1];
 	}
 
@@ -89,11 +142,7 @@ public class MyPanel extends JPanel {
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(x1, y1, width + 1, height + 1);
 
-
-
-
 		//Draw the grid
-		//By default, the grid will be 9x9 (see above: TOTAL_COLUMNS and TOTAL_ROWS) 
 		g.setColor(Color.BLACK);
 		for (int y = 0; y <= TOTAL_ROWS; y++) {
 			g.drawLine(x1 + GRID_X, y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)), x1 + GRID_X + ((INNER_CELL_SIZE + 1) * TOTAL_COLUMNS), y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)));
@@ -119,39 +168,37 @@ public class MyPanel extends JPanel {
 					if (numberOfSurroundingMines[x][y] != 0) {
 						switch (numberOfSurroundingMines[x][y]) {
 						case 1:
-							g.setColor(Color.YELLOW);
-							break;
-						case 2:
 							g.setColor(Color.BLUE);
 							break;
-						case 3:
+						case 2:
 							g.setColor(Color.CYAN);
 							break;
-						case 4:
+						case 3:
 							g.setColor(Color.GREEN);
 							break;
-						case 5:
-							g.setColor(Color.PINK);
+						case 4:
+							g.setColor(Color.YELLOW);
 							break;
-						case 6:
+						case 5:
 							g.setColor(Color.ORANGE);
 							break;
-						case 7:
+						case 6:
 							g.setColor(Color.RED);
+							break;
+						case 7:
+							g.setColor(Color.PINK);
 							break;
 						case 8:
 							g.setColor(Color.MAGENTA);
 							break;
 						}
 						g.setFont(new Font("CALIBRI", Font.BOLD, 10));
-						g.drawString(Integer.toString(numberOfSurroundingMines[x][y]),(x1 + GRID_X + (x * ((INNER_CELL_SIZE + 1))) + 1) + INNER_CELL_SIZE/2 +1, (y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1) + INNER_CELL_SIZE/2 +3);
+						g.drawString(Integer.toString(numberOfSurroundingMines[x][y]),(x1 + GRID_X + (x * (INNER_CELL_SIZE + 1)) + 1) + INNER_CELL_SIZE/2, (y1 + GRID_Y + (y * (INNER_CELL_SIZE + 1)) + 1) + INNER_CELL_SIZE/2);
 					}
 				}
 			}
 		}
 	}
-
-
 
 	public int getGridX(int x, int y) {
 		Insets myInsets = getInsets();
@@ -176,6 +223,14 @@ public class MyPanel extends JPanel {
 		}
 		return x;
 	}
+	public void getButton(){
+		if((x < 0 || x > TOTAL_COLUMNS -1 || y < 0 || y > TOTAL_ROWS - 1) ){
+			
+			
+			
+		}
+	}
+	
 	public int getGridY(int x, int y) {
 		Insets myInsets = getInsets();
 		int x1 = myInsets.left;
@@ -200,77 +255,148 @@ public class MyPanel extends JPanel {
 		return y;
 	}
 
-	public static int isMine (int xPos, int yPos) {
+	//Returns true if cell is a mine
+	public static boolean isMine (int xPos, int yPos) {
 		for (int i=0; i < minesNumbers; i++) {
-			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos) {return 1;} //returns 1 if cell is a mine
+			if (minesPosition[i][0] == xPos && minesPosition[i][1] == yPos) {return true;}
 		}
-		return 0; //returns 0 if cell is not mine
+		return false;
 	}
 
-	public static void surroundingMines (int xPos, int yPos) {
+	//Returns true if cell is on a corner or edge of the grid
+	public static boolean isBorder (int xPos, int yPos) {
+		if (xPos == 0 || xPos >= TOTAL_COLUMNS - 1) {return true;}
+		else if (yPos == 0 || yPos >= TOTAL_ROWS - 1) {return true;}
+		return false;
+	}
+
+	//Returns number of mines on the six surrounding squares of a cell
+	public static void countSurroundingMines (int xPos, int yPos) {
+		colorArray[xPos][yPos] = Color.LIGHT_GRAY;
 		numberOfSurroundingMines[xPos][yPos] = 0;
-		for (int j = -1; j < 2; j++) {
-			for (int k = -1; k < 2; k++) {
-				if(!(j==0&&k==0)){
-				for (int i = 0; i < minesNumbers; i++) {
-//					int xpos = minesPosition[i][0];
-//					int ypos = minesPosition[i][1];
-					if (getMinePositionX(i) == xPos+j && getMinePositionY(i) == yPos+k) {
+		for (int j = 0; j < 3; j++) {
+			for (int k = 0; k < 3; k++) {
+				if (!(j==1 && k==1)) {
+					if (isMine(xPos+j-1, yPos+k-1)) {
 						numberOfSurroundingMines[xPos][yPos]++;
-					
+					}
+				}
+			}
+		}
+		if (numberOfSurroundingMines[xPos][yPos] == 0) {openEmptyMines(xPos, yPos);}
+		if(colorArray[xPos][yPos].equals(Color.LIGHT_GRAY)){
+			uncoveredCells++;
+		}
+	}
 
-		
-					}}}}}
-		
-		
-		if(numberOfSurroundingMines[xPos][yPos]==0 && xPos <TOTAL_COLUMNS){
-			
-			MyPanel.colorArray[xPos+1][yPos]= Color.LIGHT_GRAY;
-			
-			MyPanel.surroundingMines(xPos+1, yPos);
-			
-		if(numberOfSurroundingMines[xPos][yPos]==0 && yPos <TOTAL_ROWS){
-			
-			MyPanel.colorArray[xPos][yPos+1]= Color.LIGHT_GRAY;
-	
-			MyPanel.surroundingMines(xPos, yPos+1);
-			
+
+	public static void openEmptyMines (int xPos, int yPos) {
+		if (!isBorder(xPos, yPos)) {
+			for (int j = 0; j < 3; j++) {
+				for (int k = 0; k < 3; k++) {
+					if (!(j==0&&k==0)) {
+						if (!colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+j-1][yPos+k-1].equals(Color.RED)){
+							MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+						}
+					}
+				}
 			}
-		
-			
-		if(numberOfSurroundingMines[xPos][yPos]==0 && xPos >0){
-			
-			MyPanel.colorArray[xPos-1][yPos]= Color.LIGHT_GRAY;
-			
-			MyPanel.surroundingMines(xPos-1, yPos);
-			
-			}
-		if(numberOfSurroundingMines[xPos][yPos]==0 && yPos >0){
-			
-			MyPanel.colorArray[xPos][yPos-1]= Color.LIGHT_GRAY;
-			
-			MyPanel.surroundingMines(xPos, yPos-1);
-			
-			}}
 		}
-	
-	
-	public void lostGame () {
+		else {
+			if (xPos==0 && yPos==0) { //Verifies if the cells starting from the upper-left corner have not been uncovered or 'flagged' and then executes recursive spacing method
+				if (!colorArray[xPos+1][yPos].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+1][yPos].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos+1, yPos+1);
+				if (!colorArray[xPos][yPos+1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos][yPos+1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos, yPos+1);
+				if (!colorArray[xPos+1][yPos+1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+1][yPos+1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos+1, yPos+1);
+			}
+			else if (xPos==0 && yPos==TOTAL_ROWS-1) {//Verifies if the cells starting from the lower-left corner have not been uncovered or 'flagged' and then executes recursive spacing method
+				if (!colorArray[xPos+1][yPos].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+1][yPos].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos+1, yPos);
+				if (!colorArray[xPos][yPos-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos][yPos-1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos, yPos-1);
+				if (!colorArray[xPos+1][yPos-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+1][yPos-1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos+1, yPos-1);
+			}
+			else if (xPos==TOTAL_COLUMNS-1 && yPos==0) { //Verifies if the cells starting from the upper-right corner have not been uncovered or 'flagged' and then executes recursive spacing method
+				if (!colorArray[xPos-1][yPos].equals(Color.LIGHT_GRAY)&&!colorArray[xPos-1][yPos].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos-1, yPos);
+				if (!colorArray[xPos][yPos+1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos][yPos+1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos, yPos+1);
+				if (!colorArray[xPos-1][yPos+1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos-1][yPos+1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos-1, yPos+1);
+			}
+			else if (xPos==TOTAL_COLUMNS-1 && yPos==TOTAL_ROWS-1) {//Verifies if the cells starting from the lower-right corner have not been uncovered or 'flagged' and then executes recursive spacing method
+				if (!colorArray[xPos-1][yPos].equals(Color.LIGHT_GRAY)&&!colorArray[xPos-1][yPos].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos-1, yPos);
+				if (!colorArray[xPos][yPos-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos][yPos-1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos, yPos-1);
+				if (!colorArray[xPos-1][yPos-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos-1][yPos-1].equals(Color.RED))
+					MyPanel.countSurroundingMines(xPos-1, yPos-1);
+			}
+			else if (xPos == 0) {
+				for (int j = 1; j < 3; j++) {
+					for (int k = 0; k < 3; k++) {
+						if (!(j==0 && k==0)) {
+							if (!colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+j-1][yPos+k-1].equals(Color.RED)){
+								MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+							}
+						}
+					}
+				}
+			}
+			else if (yPos == 0) {
+				for (int j = 0; j < 3; j++) {
+					for (int k = 1; k < 3; k++) {
+						if (!(j==0 && k==0)) {
+							if (!colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+j-1][yPos+k-1].equals(Color.RED)){
+								MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+							}
+						}
+					}
+				}
+			}
+			else if (xPos == TOTAL_COLUMNS-1) {
+				for (int j = 0; j < 2; j++) {
+					for (int k = 0; k < 3; k++) {
+						if (!(j==0 && k==0)) {
+							if (!colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+j-1][yPos+k-1].equals(Color.RED)){
+								MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+							}
+						}
+					}
+				}
+			}
+			else if (yPos == TOTAL_ROWS-1) {
+				for (int j = 0; j < 3; j++) {
+					for (int k = 0; k < 2; k++) {
+						if (!(j==0 && k==0)) {
+							if (!colorArray[xPos+j-1][yPos+k-1].equals(Color.LIGHT_GRAY)&&!colorArray[xPos+j-1][yPos+k-1].equals(Color.RED)){
+								MyPanel.countSurroundingMines(xPos+j-1, yPos+k-1);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	public void lostGame () { //Verifies if the user 'lost' and repaints all the mine positions black simultaniouly. 
+		lostGame = true;
 		for (int i = 0; i < minesNumbers; i++) {
-			colorArray[MyPanel.getMinePositionX(i)][MyPanel.getMinePositionY(i)] = Color.BLACK;
+			colorArray[this.getX(i)][this.getY(i)] = Color.BLACK;
+			
 		}
+		
+		
 	}
-	public boolean wonGame () {
-		return (uncoveredCells == cellsWithoutMines) && true;
+
+	public static boolean wonGame () { //Verifies if the user has won; if the value of uncoveredcells reaches 81 (max of grid in this case) minus the amount of mines, it'll return true. 
+	
+		if(uncoveredCells == (TOTAL_COLUMNS*TOTAL_ROWS) - minesNumbers){
+		return true;
+		
 	}
-	public void announcewon(){
-	if(wonGame()== true){
-		JOptionPane.showMessageDialog(null, "Won", null, JOptionPane.INFORMATION_MESSAGE );
-		System.exit(0);
+	return false;
 	}
-	}
-	public void announcelost(){
-		if(isMine(mouseDownGridX, mouseDownGridY) == mouseDownGridX && isMine(mouseDownGridX, mouseDownGridY) == mouseDownGridY){
-			JOptionPane.showMessageDialog(null, "YOU LOOSE" );
-		}
-}}
+}
