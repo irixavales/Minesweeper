@@ -1,46 +1,46 @@
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class MyMouseAdapter extends MouseAdapter {
 
+
 	public void mousePressed(MouseEvent e) {
-//		switch (e.getButton()) {
-//		case 1:		//Left mouse button
-			Component c = e.getComponent();
-			while (!(c instanceof JFrame)) {
-				c = c.getParent();
-				if (c == null) {
-					return;
-				}
+		//		switch (e.getButton()) {
+		//		case 1:		//Left mouse button
+		Component c = e.getComponent();
+		while (!(c instanceof JFrame)) {
+			c = c.getParent();
+			if (c == null) {
+				return;
 			}
-			JFrame myFrame = (JFrame) c;
-			MyPanel myPanel = (MyPanel) myFrame.getContentPane().getComponent(0);
-			Insets myInsets = myFrame.getInsets();
-			int x1 = myInsets.left;
-			int y1 = myInsets.top;
-			e.translatePoint(-x1, -y1);
-			int x = e.getX();
-			int y = e.getY();
-			myPanel.x = x;
-			myPanel.y = y;
-			myPanel.mouseDownGridX = myPanel.getGridX(x, y);
-			myPanel.mouseDownGridY = myPanel.getGridY(x, y);
-			myPanel.repaint();
-//			break;
-//		case 3:		//Right mouse button
-//			//Do nothing
-//			break;
-//		default:    //Some other button (2 = Middle mouse button, etc.)
-//			//Do nothing
-//			break;
 		}
-	
+		JFrame myFrame = (JFrame) c;
+		MyPanel myPanel = (MyPanel) myFrame.getContentPane().getComponent(0);
+		Insets myInsets = myFrame.getInsets();
+		int x1 = myInsets.left;
+		int y1 = myInsets.top;
+		e.translatePoint(-x1, -y1);
+		int x = e.getX();
+		int y = e.getY();
+		myPanel.x = x;
+		myPanel.y = y;
+		myPanel.mouseDownGridX = myPanel.getGridX(x, y);
+		myPanel.mouseDownGridY = myPanel.getGridY(x, y);
+		myPanel.repaint();
+		//			break;
+		//		case 3:		//Right mouse button
+		//			//Do nothing
+		//			break;
+		//		default:    //Some other button (2 = Middle mouse button, etc.)
+		//			//Do nothing
+		//			break;
+	}
 
 
 	public void mouseReleased(MouseEvent e) {
@@ -84,33 +84,44 @@ public class MyMouseAdapter extends MouseAdapter {
 						//Do nothing
 					} 
 					else {
-						//Released the mouse button on the same cell where it was pressed
-						if(!MyPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY].equals(Color.RED)) { //Repaints cell light grey upon left click if the cell is not red.
-							int isMine = MyPanel.isMine(gridX, gridY);
-							switch (isMine) {
-							case 0: //Released on cell without mine
-								MyPanel.colorArray[gridX][gridY] = Color.LIGHT_GRAY;
-								MyPanel.surroundingMines(gridX, gridY);
-								break;
-							case 1: //Released on a mine
-								MyPanel.lostGame = true;
-								myPanel.lostGame();								
-								break;}}
-				
-						}
 						
-						
-						
-						
-						
+							//Released the mouse button on the same cell where it was pressed
+
+							if(!MyPanel.colorArray[myPanel.mouseDownGridX][myPanel.mouseDownGridY].equals(Color.RED)) { //Repaints cell light grey upon left click if the cell is not red.
+
+								boolean isMine = MyPanel.isMine(gridX, gridY);
+
+								if (!isMine) {//Released on cell without mine
+
+									MyPanel.countSurroundingMines(gridX, gridY);
+
+								}
+
+								else {	//Released on a mine
+
+									myPanel.lostGame();								
+
+								}
+								myPanel.repaint();
+
 					
+				}
+			}
 
-
-									}}
+			if(MyPanel.lostGame==true){
+				JOptionPane.showMessageDialog(null, "You Loose", "MINESWEEPER", JOptionPane.INFORMATION_MESSAGE);
+				System.exit(0);
+			}
+			
+			if(MyPanel.wonGame()== true){
+				JOptionPane.showMessageDialog(null, "You Won", "MINESWEEPER", JOptionPane.INFORMATION_MESSAGE);
+				System.exit(0);
+			}
+				}}
+			
 			
 
-
-
+				
 			myPanel.repaint();
 
 			break;
@@ -155,4 +166,5 @@ public class MyMouseAdapter extends MouseAdapter {
 			break;
 		}
 	}
-}
+}//
+
